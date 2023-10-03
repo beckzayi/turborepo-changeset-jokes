@@ -12,6 +12,6 @@ if (env === "master") {
     await $`changeset status --output=${'changeset-out.json'} --since=origin/main`;
   } catch (e) {
     await $`changeset add --empty`;
-    await $`changeset status --output=${'changeset-out.json'} --since=origin/main`;
+    // await $`changeset status --output=${'changeset-out.json'} --since=origin/main`;
   }
 }
