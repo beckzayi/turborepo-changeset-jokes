@@ -1,5 +1,9 @@
 #!/usr/bin/env zx
 
+if (!fs.existsSync('changeset-out.json')) {
+  await $`echo changeset-out.json file does not exist`;
+  process.exit(0);
+}
 const getChangedPackages = async () => {
   // Read changeset from file
   const changesets = await fs.readJson('changeset-out.json');
