@@ -23,4 +23,6 @@ const action = process.argv.slice(3)[0]
 
 if (flags?.length > 0 && action) {
   await $`turbo ${action} ${flags}`;
+} else {
+  await $`turbo ${action} --filter=web`;
 }
