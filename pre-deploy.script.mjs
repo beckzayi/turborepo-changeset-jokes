@@ -6,6 +6,10 @@
 // }
 
 const getChangedPackages = async () => {
+  if (!fs.existsSync('changeset-out.json')) {
+    return null;
+  }
+
   // Read changeset from file
   const changesets = await fs.readJson('changeset-out.json');
   // Filter out changesets that are not major, minor, or patch and derive the changed packages only
@@ -13,7 +17,7 @@ const getChangedPackages = async () => {
 };
 
 // Run tests for changed packages only
-const flags = (await getChangedPackages()).map(name => `--filter=${name}`);
+const flags = (await getChangedPackages())?.map(name => `--filter=${name}`);
 
 const action = process.argv.slice(3)[0]
 

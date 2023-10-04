@@ -1,6 +1,10 @@
 #!/usr/bin/env zx
 
 const getChangedPackages = async () => {
+  if (!fs.existsSync('changeset-out.json')) {
+    return null;
+  }
+  
   // Read changeset from file
   const changesets = await fs.readJson('changeset-out.json');
   // Filter out changesets that are not major, minor, or patch and derive the changed packages only
@@ -9,7 +13,7 @@ const getChangedPackages = async () => {
 
 const branch = process.env.CI_ACTION_REF_NAME;
 
-const flags = (await getChangedPackages()).map(name => `--filter=${name}`);
+const flags = (await getChangedPackages())?.map(name => `--filter=${name}`);
 
 if (branch === "main" && flags?.length > 0) {
   // Build the packages first as there can be interdependencies
