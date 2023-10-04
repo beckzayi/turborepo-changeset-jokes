@@ -1,6 +1,11 @@
 #!/usr/bin/env zx
 
-import { getChangedPackages } from "./scripts/constants.mjs";
+const getChangedPackages = async () => {
+  // Read changeset from file
+  const changesets = await fs.readJson('changeset-out.json');
+  // Filter out changesets that are not major, minor, or patch and derive the changed packages only
+  return changesets.releases.filter(release => ['major', 'minor', 'patch'].includes(release.type)).map(release => release.name);
+};
 
 const branch = process.env.CI_ACTION_REF_NAME;
 
