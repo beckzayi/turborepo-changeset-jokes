@@ -15,10 +15,10 @@ if (env === "main") {
 
   await $`echo ***** start *****`;
 
-  await $`changeset status --output=${'changeset-out.json'} --since=origin/main || echo 0`;
+  await $`changeset status --output=${'changeset-out.json'} --since=origin/main || changeset add --empty`;
 
-  // if (!fs.existsSync('changeset-out.json')) {
-  //   await $`echo 0 > changeset-out.json does not exist`;
-  //   await $`changeset status --output=${'changeset-out.json'}`;
-  // }
+  if (!fs.existsSync('changeset-out.json')) {
+    await $`echo 0 > changeset-out.json does not exist`;
+    await $`changeset status --output=${'changeset-out.json'}`;
+  }
 }
