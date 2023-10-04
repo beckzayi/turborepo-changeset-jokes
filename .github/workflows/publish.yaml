@@ -1,0 +1,48 @@
+name: turborepo changeset CI/CD - Publish
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize]
+
+jobs:
+  publish:
+    if: github.ref_name == 'master'
+    runs-on: ubuntu-latest
+    name: Publish to GH Packages 📦
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - name: Turbo, zx, and changesets install
+        run: |
+          yarn global add turbo
+          yarn global add zx
+          yarn global add @changesets/cli
+
+      - name: Prune dependencies
+        run: |
+          zx changeset.script.mjs
+
+      - uses: actions/setup-node@v3
+        id: setup
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
+
+      - run: 'yarn install --prefer-offline --frozen-lockfile'
+        shell: bash
+
+      - name: Publish to Github Packages
+        run: zx publish.script.mjs

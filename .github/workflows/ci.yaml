@@ -1,0 +1,44 @@
+name: turborepo changeset CI/CD
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: Run lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Turbo, zx, and changesets install
+        run: |
+          yarn global add turbo
+          yarn global add zx
+          yarn global add @changesets/cli
+
+      - name: changeset status output
+        run: zx changeset.script.mjs
+
+      - uses: actions/setup-node@v3
+        id: setup
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
+
+      - name: Install dependencies
+        run: yarn install --prefer-offline --frozen-lockfile
+        shell: bash
+
+      - name: Turbo Lint
+        run: zx pre-deploy.script.mjs lint
